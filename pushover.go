@@ -4,7 +4,7 @@ import (
 	//"errors"
 	"encoding/json"
 	"fmt"
-	"goutils/web"
+	"github.com/minya/goutils/web"
 	"io/ioutil"
 	"net/http"
 	"net/url"
