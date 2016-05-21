@@ -3,9 +3,9 @@ package gopushover
 import (
 	//"errors"
 	"encoding/json"
-	"fmt"
 	"github.com/minya/goutils/web"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -18,12 +18,13 @@ type PushoverResult struct {
 }
 
 // SendMessage sends message to pushover
-func SendMessage(token string, user string, msg string) (res *PushoverResult, e error) {
+func SendMessage(token string, user string, title string, msg string) (res *PushoverResult, e error) {
 	client := http.Client{
 		Transport: web.DefaultTransport(1000),
 	}
 
 	form := url.Values{
+		"title":   {title},
 		"message": {msg},
 		"token":   {token},
 		"user":    {user},
@@ -31,15 +32,18 @@ func SendMessage(token string, user string, msg string) (res *PushoverResult, e 
 
 	resp, err := client.PostForm("https://api.pushover.net/1/messages.json", form)
 	if err != nil {
+		log.Printf("Error while post: %v\n", err)
 		return nil, err
 	}
 
-	fmt.Printf("resp from pushover: %v\n", resp.StatusCode)
+	log.Printf("resp from pushover: %v\n", resp.StatusCode)
 
 	bodyBin, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
+
+	log.Printf("Pushover respond: %v\n", string(bodyBin))
 
 	result := new(PushoverResult)
 	err = json.Unmarshal(bodyBin, result)
