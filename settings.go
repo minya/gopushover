@@ -3,8 +3,10 @@ package gopushover
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
 	"os/user"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -14,6 +16,11 @@ func ReadSettings(spath string) (PushoverSettings, error) {
 	if strings.Index(spath, "~/") == 0 {
 		user, _ := user.Current()
 		spath = path.Join(user.HomeDir, strings.TrimLeft(spath, "~/"))
+	} else if strings.Index(spath, "/") != 0 {
+		exe, err := os.Executable()
+		if err == nil {
+			spath = path.Join(filepath.Dir(exe), spath)
+		}
 	}
 
 	settingsBin, errRead := ioutil.ReadFile(spath)
