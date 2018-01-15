@@ -2,13 +2,12 @@ package gopushover
 
 import (
 	"github.com/minya/goutils/config"
-	"strings"
 )
 
 func ReadSettings(spath string) (PushoverSettings, error) {
 	var settings PushoverSettings
 
-	errUnmarshal := config.UnmarshalJson(&settings, strings.TrimLeft(spath, "~/"))
+	errUnmarshal := config.UnmarshalJson(&settings, spath)
 	if nil != errUnmarshal {
 		return settings, errUnmarshal
 	}
